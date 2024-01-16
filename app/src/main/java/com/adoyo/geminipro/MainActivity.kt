@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.adoyo.geminipro.presentation.CameraUi
 import com.adoyo.geminipro.presentation.ChatViewModel
 import com.adoyo.geminipro.presentation.MainScreen
+import com.adoyo.geminipro.presentation.TestUi
 import com.adoyo.geminipro.ui.theme.GeminiProTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,18 +40,21 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val values = viewModel.chatState.collectAsState().value
+                    val bitmaps = viewModel.bitmaps.collectAsState().value
                     if (values.isLoading) {
                         Box(modifier = Modifier.fillMaxSize()) {
                             Text(text = "Loading...")
                         }
                     } else {
-                       // CameraUi()
+                       // CameraUi(bitmaps = bitmaps, modifier = Modifier.fillMaxWidth(), onPhotoTaken = viewModel::onTakePhoto)
 
                         MainScreen(
                             chatState = values,
                             onPromptChanged = viewModel::promptChanged,
                             onResult = viewModel::result
                         )
+
+                      //  TestUi()
                     }
 
                 }
@@ -58,8 +63,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun hasRequiredPermissions() = CAMERAX_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(applicationContext, it) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(
+            applicationContext,
+            it
+        ) == PackageManager.PERMISSION_GRANTED
     }
+
     companion object {
         private val CAMERAX_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA

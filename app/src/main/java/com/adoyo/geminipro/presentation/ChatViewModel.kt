@@ -1,5 +1,6 @@
 package com.adoyo.geminipro.presentation
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adoyo.geminipro.data.ChatRepository
@@ -16,9 +17,19 @@ class ChatViewModel(
     private val state = MutableStateFlow(ChatState())
     val chatState = state.asStateFlow()
 
+    private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
+    val bitmaps = _bitmaps.asStateFlow()
+
     fun promptChanged(newPrompt: String) {
         state.update {
             it.copy(prompt = newPrompt)
+        }
+
+    }
+
+    fun onTakePhoto(bitmap: Bitmap) {
+        _bitmaps.update {
+            it + bitmap
         }
 
     }
